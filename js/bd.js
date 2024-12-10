@@ -1,59 +1,44 @@
-const almacen = "libros";
-let db = null;
-
-const abrirBd = (callback = null) =>{
-    let baseDatos = indexedDB.open("libros", 1);
-
-    baseDatos.onsuccess = (evento) => {
-        console.log("Base de datos creada");
-        db = evento.target.result;
-        if(callback) callback();
-    }
-
+const abrirBd = (callback = null) => {
+    let baseDatos = indexedDB.open('appDatabase', 1);
     baseDatos.onupgradeneeded = (evento) => {
-        console.log("BD actualizada");
+        let db = evento.target.result;
+        db.createObjectStore('estilos', { keyPath: 'id' });
+        db.createObjectStore('artistas', { keyPath: 'id' });
+        db.createObjectStore('colecciones', { keyPath: 'id' });
+    };
+    baseDatos.onsuccess = (evento) => {
         db = evento.target.result;
-        db.createObjectStore(almacen, { keyPath: "id"});
-    }
-}
+        if (callback) callback();
+    };
+};
 
-const obtenerAlmacen = (tipoTransaccion) => {
-    let transaccion = db.transaction( almacen, tipoTransaccion );
-    return transaccion.objectStore( almacen );
-}
+const obtenerAlmacen = (almacen, tipoTransaccion) => {
+    let transaccion = db.transaction(almacen, tipoTransaccion);
+    return transaccion.objectStore(almacen);
+};
 
-const guardarEvento = (libro, onsuccess = null) => {
-    let almacen = obtenerAlmacen("readwrite");
-    let guardar = almacen.add( libro );
-    guardar.onsuccess = onsuccess;
-}
+const guardarEvento = (almacen, datos, callback) => {
+    let store = obtenerAlmacen(almacen, 'readwrite');
+    let request = store.put(datos);
+    request.onsuccess = callback;
+};
 
-const listarEventos = (onsuccess = null) => {
-    let almacen = obtenerAlmacen("readonly");
-    let respuesta = almacen.getAll();
-    respuesta.onsuccess = (evento) => {
-        let lista = evento.target.result;
-        if(onsuccess) onsuccess(lista);
-    }
-}
+const listarEventos = (almacen, callback) => {
+    let store = obtenerAlmacen(almacen, 'readonly');
+    let request = store.getAll();
+    request.onsuccess = (evento) => callback(evento.target.result);
+};
 
-const listarPorId = ( id, onsuccess = null ) => {
-    let almacen = obtenerAlmacen("readonly");
-    let respuesta = almacen.get(id);
-    respuesta.onsuccess = (e) => {
-        let registro = e.target.result;
-        if ( onsuccess ) onsuccess(registro);
-    }
-}
+const listarPorId = (almacen, id, callback) => {
+    let store = obtenerAlmacen(almacen, 'readonly');
+    let request = store.get(id);
+    request.onsuccess = (evento) => callback(evento.target.result);
+};
 
-const editarEvento = (eventoActualizado, onsuccess = null) => {
-    let almacen = obtenerAlmacen("readwrite");
-    let respuesta = almacen.put( eventoActualizado);
-    respuesta.onsuccess = onsuccess;
-}
+const editarEvento = guardarEvento;
 
-const eliminarEvento = (id, onsuccess = null) => {
-    let almacen = obtenerAlmacen("readwrite");
-    let respuesta = almacen.delete(id);
-    respuesta.onsuccess = onsuccess;
-}
+const eliminarEvento = (almacen, id, callback) => {
+    let store = obtenerAlmacen(almacen, 'readwrite');
+    let request = store.delete(id);
+    request.onsuccess = callback;
+};

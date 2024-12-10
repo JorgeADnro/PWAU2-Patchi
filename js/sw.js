@@ -1,10 +1,3 @@
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").then(() => {
-      console.log("Service Worker registrado exitosamente");
-    }).catch((error) => {
-      console.error("Error al registrar el Service Worker:", error);
-    });
-  }
 
 const CACHE_NAME = 'mi-pwa-cache-v1';
 const urlsToCache = [
@@ -14,10 +7,11 @@ const urlsToCache = [
     '/artistas.html',
     '/colecciones.html',
     '/tendencias.html',
-    '/css/styles.css',
+    '/estilos.css',
     '/js/app.js',
-    '/icon-192x192.png',
-    '/icon-512x512.png',
+    '/img/otros/fondo.jpg',
+    '/img/otros/NOMBRE.png',
+    '/img/Logo-transparente2.png',
     '/manifest.json'
 ];
 
@@ -26,7 +20,18 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                return cache.addAll(urlsToCache);
+                return Promise.all(
+                    urlsToCache.map((url) => {
+                        return fetch(url).then((response) => {
+                            if (!response.ok) {
+                                throw new Error(`Request for ${url} failed with status ${response.status}`);
+                            }
+                            return cache.put(url, response);
+                        }).catch((error) => {
+                            console.error(`No se pudo cachear ${url}:`, error);
+                        });
+                    })
+                );
             })
     );
 });
@@ -50,8 +55,10 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request)
-            .then((response) => {
-                return response || fetch(event.request);
+            .then((response) => response || fetch(event.request))
+            .catch((error) => {
+                console.error('Error al manejar la solicitud:', error);
+                return new Response('Error al cargar el recurso', { status: 500 });
             })
     );
 });

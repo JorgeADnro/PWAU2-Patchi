@@ -16,7 +16,6 @@
 
 <body>
 
-  <script src="js/app.js"></script>
   <!---web--->
   <ul class="nav justify-content-center" style="  background-color: #feddb2;">
     <li class="nav-item">
@@ -39,36 +38,51 @@
       <a href="tendencias.html">TENDENCIAS</a>
     </div>
   </div>
-  <!--- inicio contenido--->
-  <div class="containerCol">
-    <div class="image-boxCol">
-      <img src="img/Recursos/Colecciones/1.jpg" alt="Imagen">
-    </div>
-    <div class="content-boxCol">
-      <p class="texto1" style="margin: 30px;">COLECCIÓN DE PRIMAVERA</p>
-      <button type="button">COMPRA AQUÍ</button>
-    </div>
-  </div>
 
-  <div class="containerCol2">
-    <div class="image-boxCol2">
-      <img src="img/Recursos/Colecciones/2.jpg" alt="Imagen">
-    </div>
-    <div class="image-boxCol2">
-      <img src="img/Recursos/Colecciones/3.jpg" alt="Imagen">
-    </div>
-  </div>
 
-  <div id="artist-box">
-    <p>Lista de artistas:</p>
-    <ul>
-      <li><a href="Artista1.html">Sofía Rodríguez Martínez</a></li>
-      <li><a href="Artista2.html">Juan López Díaz</a></li>
-      <li><a href="Artista3.html">Ana García Pérez</a></li>
-      <li><a href="Artista4.html">Luis Fernández González</a></li>
-      <li><a href="Artista5.html">María Martínez Sánchez</a></li>
-    </ul>
-  </div>
+  <h2>Colecciones</h2>
+
+  <form id="colecciones-form" data-type="add" data-id="">
+    <div class="row mb-2">
+      <div class="2">Nombre</div>
+      <div class="">
+        <input type="text" id="nombre" name="nombre" class="form-control" required>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="2">Categoría</div>
+      <div class="">
+        <input type="text" id="categoria" name="categoria" class="form-control" required>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="2">Fecha</div>
+      <div class="">
+        <input type="text" id="fecha" name="fecha" class="form-control" required>
+      </div>
+    </div>
+    <div class="justify-content-between">
+      <button class="btn btn-primary">Guardar</button>
+      <button class="btn btn-warning" onclick="eliminar()">Limpiar</button>
+    </div>
+
+  </form>
+  <br />
+  <hr />
+  <table id="colecciones-lista" class="table table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Fecha</th>
+        <th>Enviado</th>
+        <th colspan="2">Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script src="js/bd.js"></script>
+  <script src="js/app.js"></script>
 
 </body>
 

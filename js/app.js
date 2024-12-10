@@ -1,127 +1,132 @@
-if(navigator.serviceWorker){
-    navigator.serviceWorker.register("/sw.js");
-}
-
-let form = document.querySelector("#estilos-form");
-let tabla = document.querySelector("#estilos-lista tbody");
-let listaDatos = [];
-
-const nuevoId = () => {
-    let ultimoRegistro = listaDatos[ listaDatos.length - 1];
-    if (ultimoRegistro) {
-        return ultimoRegistro.id + 1;
-    }else {
-        return 1;
-    }
-}
-
-form.onsubmit = (evento) => {
-    evento.preventDefault();
-    let fd = new FormData(form);
-    let datos = Object.fromEntries( fd.entries() );
-    let tipoOperacion = form.dataset.type;
-    if (tipoOperacion === "add") {
-        datos.id = nuevoId();
-        datos.enviado = false;
-        //guardarEvento(datos, generarTabla);
-        registrarTareaAsync(datos);
-    }else {
-        datos.id = parseInt( form.dataset.id );
-        editarEvento( datos, generarTabla);
-    }
-    form.reset();
-}
-
-const registrarTareaAsync = ( datos ) =>{
-    guardarEvento(datos,()=>{
-        generarTabla();
-        if("SyncManager" in window){
-            navigator.serviceWorker.ready.then(swRegistrado => {
-                return swRegistrado.sync.register("sync-info-libros");
-            });
-        }
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("js/sw.js").then(() => {
+        console.log("Service Worker registrado exitosamente");
+    }).catch((error) => {
+        console.error("Error al registrar el Service Worker:", error);
     });
 }
 
-const generarFila = ({id, nombre,fecha,enviado }) => {
-    let tr = document.createElement("tr");
-
-    //nombre
-    td = document.createElement("td");
-    td.textContent = nombre;
-    tr.appendChild(td);
-
-    //titulo
-    td = document.createElement("td");
-    td.textContent = titulo;
-    tr.appendChild(td);
-
-    //fecha
-    td = document.createElement("td");
-    td.textContent = fecha;
-    tr.appendChild(td);
-
-    //enviado
-    td = document.createElement("td");
-    td.textContent = enviado ? "Sí" : "No";
-    tr.appendChild(td);
-
-    //boton editar
-    td = document.createElement("td");
-    let button = document.createElement("button");
-    button.textContent = "Editar";
-    button.className = "btn btn-info";
-    button.onclick = () => {
-        editarRegistro(id);
+const paginas = {
+    estilos: {
+        formId: 'estilos-form',
+        tableId: 'estilos-lista',
+        almacen: 'estilos',
+        campos: ['nombre', 'titulo', 'fecha']
+    },
+    artistas: {
+        formId: 'artistas-form',
+        tableId: 'artistas-lista',
+        almacen: 'artistas',
+        campos: ['nombre', 'especialidad', 'fecha']
+    },
+    colecciones: {
+        formId: 'colecciones-form',
+        tableId: 'colecciones-lista',
+        almacen: 'colecciones',
+        campos: ['nombre', 'categoria', 'fecha']
     }
-    td.appendChild(button);
-    tr.appendChild(td);
+};
 
-    //boton eliminar
-    td = document.createElement("td");
-    button = document.createElement("button");
-    button.textContent = " Eliminar ";
-    button.className = "btn btn-danger";
-    button.onclick = () => {
-        eliminarEvento(id, generarTabla);
+document.addEventListener('DOMContentLoaded', () => {
+    
+    
+
+    // Detectar página activa
+    const pagina = Object.keys(paginas).find((key) => document.querySelector(`#${paginas[key].formId}`));
+    if (!pagina) {
+        console.error('No se detectó una página válida.');
+        return;
     }
-    td.appendChild( button );
-    tr.appendChild( td );
 
-    return tr;
-
-}
-
-const generarTabla = () => {
-    listarEventos( (datos) => {
-        listaDatos = datos;
-        tabla.innerHTML = "";
-        datos.forEach( registro => {
-            tabla.appendChild( generarFila(registro));
-        });
-        form.dataset.type = "add";
-        form.querySelector("button").textContent = "Guardar";
-    });
-}
-
-const editarRegistro = (id) => {
-    listarPorId(id, ({id, nombre, titulo, fecha}) => {
-        form.querySelector("#nombre").value = nombre;
-        form.querySelector("#titulo").value = titulo;
-        form.querySelector("#fecha").value = fecha;
-        form.dataset.id = id;
-        form.dataset.type = "update";
-        form.querySelector("button").textContent = "Actualizar";
-    });
-}
-
-function eliminar(){
-    sessionStorage.clear();
-}
-
-abrirBd(generarTabla);
-
-const canal = new BroadcastChannel("sw-messages");
-canal.addEventListener("message", evento => {
-    generarTabla();
+    // Inicializar lógica para la página actual
+    const { formId, tableId, almacen } = paginas[pagina];
+    inicializarFormularioYTabla(formId, tableId, almacen);
 });
+
+function inicializarFormularioYTabla(formId, tableId, almacen) {
+    let form = document.getElementById(formId);
+    let tabla = document.getElementById(tableId).querySelector('tbody');
+    let listaDatos = [];
+    const { campos } = paginas[almacen];
+
+    const nuevoId = () => (listaDatos.length ? listaDatos[listaDatos.length - 1].id + 1 : 1);
+
+    // Manejar el envío del formulario
+    form.onsubmit = (evento) => {
+        evento.preventDefault();
+        let fd = new FormData(form);
+        let datos = Object.fromEntries(fd.entries());
+
+        // Asegurarse de que solo se incluyan los campos definidos
+        datos = campos.reduce((obj, campo) => {
+            obj[campo] = datos[campo];
+            return obj;
+        }, {});
+        datos.id = form.dataset.id ? parseInt(form.dataset.id) : nuevoId();
+        datos.enviado = false;
+
+        if (form.dataset.type === 'update') {
+            editarEvento(almacen, datos, generarTabla);
+        } else {
+            guardarEvento(almacen, datos, generarTabla);
+        }
+        form.reset();
+        form.dataset.type = 'add';
+    };
+
+    // Generar filas de la tabla
+    const generarFila = (registro) => {
+        let tr = document.createElement('tr');
+        campos.forEach((campo) => {
+            let td = document.createElement('td');
+            td.textContent = registro[campo] || '';
+            tr.appendChild(td);
+        });
+
+        // Botón editar
+        let td = document.createElement('td');
+        let button = document.createElement('button');
+        button.textContent = 'Editar';
+        button.className = 'btn btn-info';
+        button.onclick = () => editarRegistro(registro.id);
+        td.appendChild(button);
+        tr.appendChild(td);
+
+        // Botón eliminar
+        td = document.createElement('td');
+        button = document.createElement('button');
+        button.textContent = 'Eliminar';
+        button.className = 'btn btn-danger';
+        button.onclick = () => eliminarEvento(almacen, registro.id, generarTabla);
+        td.appendChild(button);
+        tr.appendChild(td);
+
+        return tr;
+    };
+
+    // Generar tabla completa
+    const generarTabla = () => {
+        listarEventos(almacen, (datos) => {
+            listaDatos = datos;
+            tabla.innerHTML = '';
+            datos.forEach((registro) => {
+                tabla.appendChild(generarFila(registro));
+            });
+        });
+    };
+
+    // Cargar un registro en el formulario para editar
+    const editarRegistro = (id) => {
+        listarPorId(almacen, id, (registro) => {
+            campos.forEach((campo) => {
+                if (form[campo]) form[campo].value = registro[campo];
+            });
+            form.dataset.id = registro.id;
+            form.dataset.type = 'update';
+        });
+    };
+
+    // Inicializar tabla al cargar la página
+    abrirBd(() => generarTabla());
+}
+
