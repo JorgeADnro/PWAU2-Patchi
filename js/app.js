@@ -34,8 +34,8 @@ const paginas = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    
+
+
 
     // Detectar página activa
     const pagina = Object.keys(paginas).find((key) => document.querySelector(`#${paginas[key].formId}`));
@@ -83,32 +83,39 @@ function inicializarFormularioYTabla(formId, tableId, almacen) {
     // Generar filas de la tabla
     const generarFila = (registro) => {
         let tr = document.createElement('tr');
+
+        // Agregar celdas de los campos dinámicamente
         campos.forEach((campo) => {
             let td = document.createElement('td');
             td.textContent = registro[campo] || '';
             tr.appendChild(td);
         });
 
+        // Celda para el estado "Enviado"
+        let tdEnviado = document.createElement('td');
+        tdEnviado.textContent = registro.enviado ? 'Sí' : 'No';
+        tr.appendChild(tdEnviado);
+
         // Botón editar
-        let td = document.createElement('td');
-        let button = document.createElement('button');
-        button.textContent = 'Editar';
-        button.className = 'btn btn-info';
-        button.onclick = () => editarRegistro(registro.id);
-        td.appendChild(button);
-        tr.appendChild(td);
+        let tdAcciones = document.createElement('td');
+        let botonEditar = document.createElement('button');
+        botonEditar.textContent = 'Editar';
+        botonEditar.className = 'btn btn-info';
+        botonEditar.onclick = () => editarRegistro(registro.id);
+        tdAcciones.appendChild(botonEditar);
+        tr.appendChild(tdAcciones);
 
         // Botón eliminar
-        td = document.createElement('td');
-        button = document.createElement('button');
-        button.textContent = 'Eliminar';
-        button.className = 'btn btn-danger';
-        button.onclick = () => eliminarEvento(almacen, registro.id, generarTabla);
-        td.appendChild(button);
-        tr.appendChild(td);
+        let botonEliminar = document.createElement('button');
+        botonEliminar.textContent = 'Eliminar';
+        botonEliminar.className = 'btn btn-danger';
+        botonEliminar.onclick = () => eliminarEvento(almacen, registro.id, generarTabla);
+        tdAcciones.appendChild(botonEliminar);
+        tr.appendChild(tdAcciones);
 
         return tr;
     };
+
 
     // Generar tabla completa
     const generarTabla = () => {
@@ -135,4 +142,3 @@ function inicializarFormularioYTabla(formId, tableId, almacen) {
     // Inicializar tabla al cargar la página
     abrirBd(() => generarTabla());
 }
-
