@@ -5,6 +5,7 @@ const abrirBd = (callback = null) => {
         db.createObjectStore('estilos', { keyPath: 'id' });
         db.createObjectStore('artistas', { keyPath: 'id' });
         db.createObjectStore('colecciones', { keyPath: 'id' });
+        db.createObjectStore('tendencias', { keyPath: 'id' });
     };
     baseDatos.onsuccess = (evento) => {
         db = evento.target.result;

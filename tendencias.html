@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Patchi</title>
   <link rel="stylesheet" href="estilos.css">
+  <link rel="manifest" href="manifest.json">
   <link rel="icon" href="img/Logo-transparente2.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -15,8 +16,6 @@
 </head>
 
 <body>
-
-  <script src="js/app.js"></script>
   <!---web--->
   <ul class="nav justify-content-center" style="  background-color: #feddb2;">
     <li class="nav-item">
@@ -40,35 +39,50 @@
     </div>
   </div>
   <!--- inicio contenido--->
-  <div class="containerCol">
-    <div class="image-boxCol">
-      <img src="img/Recursos/Tendencias/Recurso 24@72x.png" alt="Imagen">
-    </div>
-    <div class="content-boxTen">
-      <p class="texto1">TENDENCIA MES DE MARZO</p>
-      <button type="button">COMPRA AQUÍ</button>
-    </div>
-  </div>
 
-  <div class="containerCol2">
-    <div class="image-boxCol2">
-      <img src="img/Recursos/Tendencias/Dos.jpg" alt="Imagen">
-    </div>
-    <div class="image-boxCol2">
-      <img src="img/Recursos/Tendencias/Tres.jpg" alt="Imagen">
-    </div>
-  </div>
+  <h2>Tendencias</h2>
 
-  <div id="artist-box">
-    <p>Lista de artistas:</p>
-    <ul>
-      <li><a href="Artista1.html">Sofía Rodríguez Martínez</a></li>
-      <li><a href="Artista2.html">Juan López Díaz</a></li>
-      <li><a href="Artista3.html">Ana García Pérez</a></li>
-      <li><a href="Artista4.html">Luis Fernández González</a></li>
-      <li><a href="Artista5.html">María Martínez Sánchez</a></li>
-    </ul>
-  </div>
+  <form id="tendencias-form" data-type="add" data-id="">
+      <div class="row mb-2">
+          <div class="2">Nombre</div>
+          <div class="">
+              <input type="text" id="nombre" name="nombre" class="form-control" required>
+          </div>
+      </div>
+      <div class="row mb-2">
+          <div class="2">Región</div>
+          <div class="">
+              <input type="text" id="region" name="region" class="form-control" required>
+          </div>
+      </div>
+      <div class="row mb-2">
+          <div class="2">Fecha</div>
+          <div class="">
+              <input type="text" id="fecha" name="fecha" class="form-control" required>
+          </div>
+      </div>
+      <div class="justify-content-between">
+          <button class="btn btn-primary">Guardar</button>
+          <button class="btn btn-warning" onclick="eliminar()">Limpiar</button>
+      </div>
+
+  </form>
+  <br />
+  <hr />
+  <table id="tendencias-lista" class="table table-bordered">
+      <thead class="table-dark">
+          <tr>
+              <th>Nombre</th>
+              <th>Región</th>
+              <th>Fecha</th>
+              <th>Enviado</th>
+              <th colspan="2">Acciones</th>
+          </tr>
+      </thead>
+      <tbody></tbody>
+  </table>
+  <script src="js/bd.js"></script>
+  <script src="js/app.js"></script>
 
 </body>
 

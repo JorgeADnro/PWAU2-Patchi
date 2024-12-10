@@ -24,6 +24,12 @@ const paginas = {
         tableId: 'colecciones-lista',
         almacen: 'colecciones',
         campos: ['nombre', 'categoria', 'fecha']
+    },
+    tendencias: {
+        formId: 'tendencias-form',
+        tableId: 'tendencias-lista',
+        almacen: 'tendencias',
+        campos: ['nombre', 'region', 'fecha']
     }
 };
 
