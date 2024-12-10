@@ -34,9 +34,6 @@ const paginas = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-
-
-
     // Detectar página activa
     const pagina = Object.keys(paginas).find((key) => document.querySelector(`#${paginas[key].formId}`));
     if (!pagina) {
@@ -47,6 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializar lógica para la página actual
     const { formId, tableId, almacen } = paginas[pagina];
     inicializarFormularioYTabla(formId, tableId, almacen);
+
+    // Manejar sincronización cuando haya conexión
+    manejarSincronizacion(almacen);
 });
 
 function inicializarFormularioYTabla(formId, tableId, almacen) {
@@ -69,7 +69,7 @@ function inicializarFormularioYTabla(formId, tableId, almacen) {
             return obj;
         }, {});
         datos.id = form.dataset.id ? parseInt(form.dataset.id) : nuevoId();
-        datos.enviado = false;
+        datos.enviado = navigator.onLine; // Marcar como enviado si hay conexión al guardar
 
         if (form.dataset.type === 'update') {
             editarEvento(almacen, datos, generarTabla);
@@ -116,7 +116,6 @@ function inicializarFormularioYTabla(formId, tableId, almacen) {
         return tr;
     };
 
-
     // Generar tabla completa
     const generarTabla = () => {
         listarEventos(almacen, (datos) => {
@@ -141,4 +140,28 @@ function inicializarFormularioYTabla(formId, tableId, almacen) {
 
     // Inicializar tabla al cargar la página
     abrirBd(() => generarTabla());
+}
+
+// Manejar sincronización de datos cuando hay conexión
+function manejarSincronizacion(almacen) {
+    window.addEventListener('online', () => {
+        console.log("Conexión detectada. Intentando sincronizar...");
+        sincronizarDatos(almacen);
+    });
+}
+
+function sincronizarDatos(almacen) {
+    listarEventos(almacen, (datos) => {
+        datos.forEach((registro) => {
+            if (!registro.enviado) {
+                // Simular la sincronización con el servidor
+                setTimeout(() => {
+                    registro.enviado = true; // Marcar como enviado
+                    editarEvento(almacen, registro, () => {
+                        console.log(`Registro ${registro.id} sincronizado`);
+                    });
+                }, 1000);
+            }
+        });
+    });
 }
