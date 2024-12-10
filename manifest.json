@@ -1,93 +1,64 @@
 {
-    "$schema": "http://json.schemastore.org/web-manifest",
-    "short_name": "MiPWA",
-    "name": "Mi Aplicación Web Progresiva",
-    "description": "Una PWA de ejemplo",
-    "scope": "/",
-    "icons": [
+  "$schema": "http://json.schemastore.org/web-manifest",
+  "short_name": "MiPWA",
+  "name": "Mi Aplicación Web Progresiva",
+  "description": "Una PWA de ejemplo",
+  "scope": "/",
+  "icons": [
       {
-        "src": "img/otros/NOMBRE.png",
-        "sizes": "96x96",
-        "type": "image/png"
+          "src": "img/otros/NOMBRE.png",
+          "sizes": "96x96",
+          "type": "image/png"
       },
       {
-        "src": "img/otros/NOMBRE.png",
-        "sizes": "144x144",
-        "type": "image/png"
+          "src": "img/otros/NOMBRE.png",
+          "sizes": "144x144",
+          "type": "image/png"
       },
       {
-        "src": "img/otros/NOMBRE.png",
-        "sizes": "192x192",
-        "type": "image/png"
+          "src": "img/otros/NOMBRE.png",
+          "sizes": "192x192",
+          "type": "image/png"
       },
       {
-        "src": "img/otros/NOMBRE.png",
-        "sizes": "256x256",
-        "type": "image/png"
+          "src": "img/otros/NOMBRE.png",
+          "sizes": "256x256",
+          "type": "image/png"
       },
       {
-        "src": "img/otros/NOMBRE.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      },
-
-
-      {
-        "src": "img/otros/fondo.jpg",
-        "sizes": "96x96",
-        "type": "image/jpg"
+          "src": "img/otros/NOMBRE.png",
+          "sizes": "512x512",
+          "type": "image/png"
       },
       {
-        "src": "img/otros/fondo.jpg",
-        "sizes": "144x144",
-        "type": "image/jpg"
+          "src": "img/otros/fondo.jpg",
+          "sizes": "96x96",
+          "type": "image/jpeg"
       },
       {
-        "src": "img/otros/fondo.jpg",
-        "sizes": "192x192",
-        "type": "image/jpg"
+          "src": "img/otros/fondo.jpg",
+          "sizes": "144x144",
+          "type": "image/jpeg"
       },
       {
-        "src": "img/otros/fondo.jpg",
-        "sizes": "256x256",
-        "type": "image/jpg"
+          "src": "img/otros/fondo.jpg",
+          "sizes": "192x192",
+          "type": "image/jpeg"
       },
       {
-        "src": "imgo/otros/fondo.jpg",
-        "sizes": "512x512",
-        "type": "image/jpg"
-      },
-
-      {
-        "src": "img/Logo-transparente2.png",
-        "sizes": "96x96",
-        "type": "image/png"
+          "src": "img/otros/fondo.jpg",
+          "sizes": "256x256",
+          "type": "image/jpeg"
       },
       {
-        "src": "img/Logo-transparente2.png",
-        "sizes": "144x144",
-        "type": "image/png"
-      },
-      {
-        "src": "img/Logo-transparente2.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "img/Logo-transparente2.png",
-        "sizes": "256x256",
-        "type": "image/png"
-      },
-      {
-        "src": "img/Logo-transparente2.png",
-        "sizes": "512x512",
-        "type": "image/png"
+          "src": "img/Logo-transparente2.png",
+          "sizes": "512x512",
+          "type": "image/png"
       }
-    ],
-    "background_color": "#EEE",
-    "theme_color": "#1565c0",
-    "start_url": "./?utm_source=web_app_manifest",
-    "display": "standalone",
-    "orientation": "any"
-  }
-  
+  ],
+  "background_color": "#EEE",
+  "theme_color": "#1565c0",
+  "start_url": "/inicio.html",
+  "display": "standalone",
+  "orientation": "any"
+}
